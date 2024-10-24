@@ -1,0 +1,10 @@
+file(GLOB_RECURSE LIBELFSources
+	"${CMAKE_CURRENT_SOURCE_DIR}/ELF.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/ELF.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Headers/ELFHeader.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Headers/ELFIdent.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/Headers/ELFProgramHeader.h"
+)
+
+add_library(${LIBELF_TARGET_NAME} STATIC ${LIBELFSources})
+target_include_directories(${LIBELF_TARGET_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../")
