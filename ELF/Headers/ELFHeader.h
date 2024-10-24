@@ -2,6 +2,8 @@
 
 #include "ELF/Headers/ELFIdent.h"
 
+#define ELF_MAGIC_NUMBER 0x464C457F
+
 namespace ELF
 {
 	enum class ELFHeaderFileType : uint16_t
