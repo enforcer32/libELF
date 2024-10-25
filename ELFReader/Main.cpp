@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 #include <ELF/ELF.h>
 
@@ -10,7 +11,7 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
-	char* option = argv[1];
+	const char* options = argv[1];
 	const char* path = argv[2];
 
 	ELF::ELF elf;
@@ -19,5 +20,9 @@ int main(int argc, char** argv)
 		std::cerr << "Failed to Parse Kernel.elf\n";
 		return -1;
 	}
+
+	if (!strcmp(options, "-h"))
+		elf.DumpHeaders();
+
 	return 0;
 }

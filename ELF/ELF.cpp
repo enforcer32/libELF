@@ -1,7 +1,8 @@
 #include "ELF/ELF.h"
+#include "ELF/Headers/ELFUtility.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 namespace ELF
 {
@@ -14,9 +15,11 @@ namespace ELF
 			return false;
 		}
 
+		m_FilePath = path;
+
 		m_Header = std::make_unique<ELF32Header>();
 		file.seekg(0, std::ios::beg);
-		file.read((char*)m_Header.get(), sizeof(ELF32Header));
+		file.read((char *)m_Header.get(), sizeof(ELF32Header));
 
 		if (!IsValidELF())
 		{
@@ -26,6 +29,13 @@ namespace ELF
 
 		std::cout << "Successfully Parsed ELF: " + path << std::endl;
 		return true;
+	}
+
+	void ELF::DumpHeaders()
+	{
+		std::cout << "---------------ELF Headers For: " << m_FilePath << "---------------" << std::endl;
+		std::cout << Utility::ELFToString(*m_Header) << std::endl;
+		std::cout << "------------------------------------------------------------" << std::endl;
 	}
 
 	bool ELF::IsValidELF()

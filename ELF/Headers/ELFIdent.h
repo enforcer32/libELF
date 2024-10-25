@@ -23,7 +23,7 @@ namespace ELF
 	// ELF OS ABI
 	enum class ELFOSABIType : uint8_t
 	{
-		None = 0x0,
+		SystemV = 0x0,
 		HPUX = 0x1,
 		NetBSD = 0x2,
 		Linux = 0x3,
