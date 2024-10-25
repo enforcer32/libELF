@@ -1,15 +1,14 @@
 #include "ELF/ELF.h"
 #include "ELF/Headers/ELFUtility.h"
 
-#include <fstream>
 #include <iostream>
 
 namespace ELF
 {
 	bool ELF::Parse(const std::string& path)
 	{
-		std::ifstream file(path, std::ios::binary);
-		if (file.fail())
+		m_FileStream = std::fstream(path, std::ios::binary | std::ios::in);
+		if (m_FileStream.fail())
 		{
 			std::cerr << "ELF->Parse: Failed to Open: " + path << std::endl;
 			return false;
@@ -18,12 +17,18 @@ namespace ELF
 		m_FilePath = path;
 
 		m_Header = std::make_unique<ELF32Header>();
-		file.seekg(0, std::ios::beg);
-		file.read((char *)m_Header.get(), sizeof(ELF32Header));
+		m_FileStream.seekg(0, std::ios::beg);
+		m_FileStream.read((char *)m_Header.get(), sizeof(ELF32Header));
 
 		if (!IsValidELF())
 		{
 			std::cerr << "ELF->Parse: Invalid ELF Magic Number: " + path << std::endl;
+			return false;
+		}
+
+		if(!ParseProgramHeaders())
+		{
+			std::cerr << "ELF->Parse: Failed to Parse Program Headers: " + path << std::endl;
 			return false;
 		}
 
@@ -38,8 +43,39 @@ namespace ELF
 		std::cout << "------------------------------------------------------------" << std::endl;
 	}
 
+	void ELF::DumpProgramHeaders()
+	{
+		std::cout << "---------------ELF Program Headers For: " << m_FilePath << "---------------" << std::endl;
+		std::cout << "ProgramHeaderCount: " << std::to_string(m_Header->ProgramHeaderCount) << std::endl;
+		
+		for(size_t i = 0; i < m_ProgramHeaders.size(); i++)
+		{
+			std::cout << "Header " << i << "\n";
+			std::cout << Utility::ELFToString(m_ProgramHeaders[i]) << "\n";
+
+			if ((i + 1) < m_ProgramHeaders.size())
+				std::cout << "\n";
+		}
+		std::cout << "------------------------------------------------------------" << std::endl;
+	}
+
 	bool ELF::IsValidELF()
 	{
 		return m_Header->Ident.Magic == ELF_MAGIC_NUMBER;
+	}
+
+	bool ELF::ParseProgramHeaders()
+	{
+		m_ProgramHeaders.reserve(m_Header->ProgramHeaderCount);
+
+		for(size_t i = 0; i < m_Header->ProgramHeaderCount; i++)
+		{
+			ELF32ProgramHeader programHeader;
+			m_FileStream.seekg((m_Header->ProgramHeaderOffset) + (m_Header->ProgramHeaderEntrySize * i));
+			m_FileStream.read((char*)&programHeader, sizeof(ELF32ProgramHeader));
+			m_ProgramHeaders.push_back(programHeader);
+		}
+
+		return true;
 	}
 }

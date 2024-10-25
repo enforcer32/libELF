@@ -145,5 +145,85 @@ namespace ELF
 			}
 			return str;
 		}
+
+		std::string ELFToString(const ELF32ProgramHeader& programHeader)
+		{
+			std::string str;
+			str += "Type: " + ELFToString(programHeader.Type) + "\n";
+			str += "Offset: " + std::format("0x{:x}", programHeader.Offset) + "\n";
+			str += "VirtualAddress: " + std::format("0x{:x}", programHeader.VirtualAddress) + "\n";
+			str += "PhysicalAddress: " + std::format("0x{:x}", programHeader.PhysicalAddress) + "\n";
+			str += "FileSize: " + std::format("0x{:x}", programHeader.FileSize) + "\n";
+			str += "MemorySize: " + std::format("0x{:x}", programHeader.MemorySize) + "\n";
+			str += "Flags: " + ELFToString(programHeader.Flags) + "\n";
+			str += "Alignment: " + std::format("0x{:x}", programHeader.Alignment);
+			return str;
+		}
+
+		std::string ELFToString(const ELFProgramHeaderType& programHeaderType)
+		{
+			std::string str;
+			switch(programHeaderType)
+			{
+			case ELFProgramHeaderType::Null:
+				str = "Null";
+				break;
+			case ELFProgramHeaderType::Load:
+				str = "Load";
+				break;
+			case ELFProgramHeaderType::Dynamic:
+				str = "Dynamic";
+				break;
+			case ELFProgramHeaderType::Interpreter:
+				str = "Interpreter";
+				break;
+			case ELFProgramHeaderType::Note:
+				str = "Note";
+				break;
+			case ELFProgramHeaderType::SharedLib:
+				str = "SharedLib";
+				break;
+			case ELFProgramHeaderType::ProgramHeader:
+				str = "ProgramHeader";
+				break;
+			case ELFProgramHeaderType::TLS:
+				str = "TLS";
+				break;
+			}
+			return str;
+		}
+
+		std::string ELFToString(const ELFProgramHeaderFlags& programHeaderFlags)
+		{
+			std::string str;
+			switch(programHeaderFlags)
+			{
+			case ELFProgramHeaderFlags::None:
+				str = "";
+				break;
+			case ELFProgramHeaderFlags::Execute:
+				str = "E (Execute)";
+				break;
+			case ELFProgramHeaderFlags::Write:
+				str = "W (Write)";
+				break;
+			case ELFProgramHeaderFlags::WriteExecute:
+				str = "WE (Write/Execute)";
+				break;
+			case ELFProgramHeaderFlags::Read:
+				str = "R (Read)";
+				break;
+			case ELFProgramHeaderFlags::ReadExecute:
+				str = "RE (Read/Execute)";
+				break;
+			case ELFProgramHeaderFlags::ReadWrite:
+				str = "RW (Read/Write)";
+				break;
+			case ELFProgramHeaderFlags::ReadWriteExecute:
+				str = "RWE (Read/Write/Execute)";
+				break;
+			}
+			return str;
+		}
 	}
 }

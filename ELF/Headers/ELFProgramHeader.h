@@ -4,7 +4,7 @@
 
 namespace ELF
 {
-	enum class ELFSegmentType : uint32_t
+	enum class ELFProgramHeaderType : uint32_t
 	{
 		Null = 0x0,
 		Load = 0x1,	
@@ -16,22 +16,34 @@ namespace ELF
 		TLS = 0x7,
 	};
 
+	enum class ELFProgramHeaderFlags : uint32_t
+	{
+		None = 0x0, // Access Denied
+		Execute = 0x1, // PF_X
+		Write = 0x2, // PF_W
+		WriteExecute = 0x3, // PF_W+PF_X
+		Read = 0x4, // PF_R
+		ReadExecute = 0x5, // PF_R+PF_X	
+		ReadWrite = 0x6, // PF_R+PF_W
+		ReadWriteExecute = 0x7, // PF_R+PF_W+PF_X
+	};
+
 	struct ELF32ProgramHeader
 	{
-		ELFSegmentType Type;
+		ELFProgramHeaderType Type;
 		uint32_t Offset;
 		uint32_t VirtualAddress;
 		uint32_t PhysicalAddress;
 		uint32_t FileSize;
 		uint32_t MemorySize;
-		uint32_t Flags; // PF_X Executable, PF_W Writable, PF_R Readable
+		ELFProgramHeaderFlags Flags; // PF_X Executable, PF_W Writable, PF_R Readable
 		uint32_t Alignment;
 	} __attribute__((packed));
 
 	struct ELF64ProgramHeader
 	{
-		ELFSegmentType Type;
-		uint32_t Flags; // PF_X Executable, PF_W Writable, PF_R Readable
+		ELFProgramHeaderType Type;
+		ELFProgramHeaderFlags Flags; // PF_X Executable, PF_W Writable, PF_R Readable
 		uint64_t Offset;
 		uint64_t VirtualAddress;
 		uint64_t PhysicalAddress;
