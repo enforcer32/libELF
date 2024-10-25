@@ -2,6 +2,7 @@
 #include "ELF/Headers/ELFUtility.h"
 
 #include <iostream>
+#include <sstream>
 
 namespace ELF
 {
@@ -26,15 +27,21 @@ namespace ELF
 			return false;
 		}
 
-		if(!ParseProgramHeaders())
+		if (!ParseProgramHeaders())
 		{
 			std::cerr << "ELF->Parse: Failed to Parse Program Headers: " + path << std::endl;
 			return false;
 		}
 
-		if(!ParseSectionHeaders())
+		if (!ParseSectionHeaders())
 		{
 			std::cerr << "ELF->Parse: Failed to Parse Section Headers: " + path << std::endl;
+			return false;
+		}
+
+		if (!ParseSectionHeaderStringTable())
+		{
+			std::cerr << "ELF->Parse: Failed to Parse String Table: " + path << std::endl;
 			return false;
 		}
 
@@ -73,6 +80,7 @@ namespace ELF
 		for(size_t i = 0; i < m_SectionHeaders.size(); i++)
 		{
 			std::cout << "Header " << i << "\n";
+			std::cout << "Name " << (m_SectionHeaderStringTableRaw.c_str() + m_SectionHeaders[i].Name) << "\n";
 			std::cout << Utility::ELFToString(m_SectionHeaders[i]) << "\n";
 
 			if ((i + 1) < m_SectionHeaders.size())
@@ -111,6 +119,31 @@ namespace ELF
 			m_FileStream.seekg((m_Header->SectionHeaderOffset) + (m_Header->SectionHeaderEntrySize * i));
 			m_FileStream.read((char*)&sectionHeader, sizeof(ELF32SectionHeader));
 			m_SectionHeaders.push_back(sectionHeader);
+		}
+
+		return true;
+	}
+
+	bool ELF::ParseSectionHeaderStringTable()
+	{
+		const auto& stringTableHeader = m_SectionHeaders[m_Header->SectionHeaderStringTableIndex];
+		m_SectionHeaderStringTableRaw.reserve(stringTableHeader.Size);
+		m_FileStream.seekg(stringTableHeader.Offset);
+		m_FileStream.read((char*)m_SectionHeaderStringTableRaw.data(), stringTableHeader.Size);
+		
+		std::ostringstream data;
+		for(size_t i = 0; i < stringTableHeader.Size; i++)
+		{
+			if (!m_SectionHeaderStringTableRaw.c_str()[i])
+			{
+				if (data.tellp())
+				{
+					m_SectionHeaderStringTable.push_back(data.str());
+					data.str("");
+				}
+				i++;
+			}
+			data << m_SectionHeaderStringTableRaw.data()[i];
 		}
 
 		return true;

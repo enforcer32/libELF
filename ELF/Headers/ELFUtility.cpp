@@ -229,7 +229,7 @@ namespace ELF
 		std::string ELFToString(const ELF32SectionHeader& sectionHeader)
 		{
 			std::string str;
-			str += "Name: " + std::to_string(sectionHeader.Name) + "\n";
+			//str += "Name: " + std::to_string(sectionHeader.Name) + "\n";
 			str += "Type: " + ELFToString(sectionHeader.Type) + "\n";
 			str += "Flags: " + ELFToString(sectionHeader.Flags) + "\n";
 			str += "Address: " + std::format("0x{:x}", sectionHeader.Address) + "\n";

@@ -24,6 +24,7 @@ namespace ELF
 		bool IsValidELF();
 		bool ParseProgramHeaders();
 		bool ParseSectionHeaders();
+		bool ParseSectionHeaderStringTable();
 
 	private:
 		std::string m_FilePath;
@@ -31,5 +32,7 @@ namespace ELF
 		std::unique_ptr<ELF32Header> m_Header;
 		std::vector<ELF32ProgramHeader> m_ProgramHeaders;
 		std::vector<ELF32SectionHeader> m_SectionHeaders;
+		std::string m_SectionHeaderStringTableRaw;
+		std::vector<std::string> m_SectionHeaderStringTable;
 	};
 }
