@@ -225,5 +225,125 @@ namespace ELF
 			}
 			return str;
 		}
+
+		std::string ELFToString(const ELF32SectionHeader& sectionHeader)
+		{
+			std::string str;
+			str += "Name: " + std::to_string(sectionHeader.Name) + "\n";
+			str += "Type: " + ELFToString(sectionHeader.Type) + "\n";
+			str += "Flags: " + ELFToString(sectionHeader.Flags) + "\n";
+			str += "Address: " + std::format("0x{:x}", sectionHeader.Address) + "\n";
+			str += "Offset: " + std::format("0x{:x}", sectionHeader.Offset) + "\n";
+			str += "Size: " + std::format("0x{:x}", sectionHeader.Size) + "\n";
+			str += "Link: " + std::to_string(sectionHeader.Link) + "\n";
+			str += "Info: " + std::to_string(sectionHeader.Info) + "\n";
+			str += "AddressAlignment: " + std::format("0x{:x}", sectionHeader.AddressAlignment) + "\n";
+			str += "EntrySize: " + std::format("0x{:x}", sectionHeader.EntrySize);
+			return str;
+		}
+
+		std::string ELFToString(const ELFSectionHeaderType& sectionHeaderType)
+		{
+			std::string str;
+			switch(sectionHeaderType)
+			{
+			case ELFSectionHeaderType::Null:
+				str = "Null";
+				break;
+			case ELFSectionHeaderType::PROGBITS:
+				str = "PROGBITS";
+				break;
+			case ELFSectionHeaderType::SymbolTable:
+				str = "SymbolTable";
+				break;
+			case ELFSectionHeaderType::StringTable:
+				str = "StringTable";
+				break;
+			case ELFSectionHeaderType::RelocationA:
+				str = "RelocationA";
+				break;
+			case ELFSectionHeaderType::Hash:
+				str = "Hash";
+				break;
+			case ELFSectionHeaderType::Dynamic:
+				str = "Dynamic";
+				break;
+			case ELFSectionHeaderType::Note:
+				str = "Note";
+				break;
+			case ELFSectionHeaderType::NOBITS:
+				str = "NOBITS";
+				break;
+			case ELFSectionHeaderType::Relocation:
+				str = "Relocation";
+				break;
+			case ELFSectionHeaderType::SharedLib:
+				str = "SharedLib";
+				break;
+			case ELFSectionHeaderType::DynamicSymbolTable:
+				str = "DynamicSymbolTable";
+				break;
+			}
+			return str;
+		}
+
+		std::string ELFToString(const ELFSectionHeaderFlags& sectionHeaderFlags)
+		{
+			std::string str;
+			uint32_t shFlags = static_cast<uint32_t>(sectionHeaderFlags);
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::Write))
+			{
+				str += "Write+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::Alloc))
+			{
+				str += "Alloc+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::ExecInstruction))
+			{
+				str += "ExecInstruction+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::Merge))
+			{
+				str += "Merge+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::Strings))
+			{
+				str += "Strings+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::InfoLink))
+			{
+				str += "InfoLink+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::LinkOrder))
+			{
+				str += "LinkOrder+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::OSNonConfirming))
+			{
+				str += "OSNonConfirming+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::Group))
+			{
+				str += "Group+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::MaskOS))
+			{
+				str += "MaskOS+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::Ordered))
+			{
+				str += "Ordered+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::Exclude))
+			{
+				str += "Exclude+";
+			}
+			if (shFlags & static_cast<uint32_t>(ELFSectionHeaderFlags::MaskProc))
+			{
+				str += "MaskProc+";
+			}
+			return str.substr(0, str.size() - 1);
+		}
 	}
 }

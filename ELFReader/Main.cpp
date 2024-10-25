@@ -7,7 +7,7 @@ int main(int argc, char** argv)
 {
 	if (argc < 3 || argc > 3)
 	{
-		std::cout << "ELFReader: Usage [option] FilePath\n\tOptions: -h = Dump Headers\n\t\t -p = Dump Program Headers\n";
+		std::cout << "ELFReader: Usage [option] FilePath\n\tOptions: -h = Dump Headers\n\t\t -p = Dump Program Headers\n\t\t -s = Dump Section Headers\n";
 		return 0;
 	}
 
@@ -26,6 +26,9 @@ int main(int argc, char** argv)
 
 	if (!strcmp(options, "-p"))
 		elf.DumpProgramHeaders();
+
+	if (!strcmp(options, "-s"))
+		elf.DumpSectionHeaders();
 
 	return 0;
 }

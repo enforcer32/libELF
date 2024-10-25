@@ -14,7 +14,7 @@ namespace ELF
 		uint16_t SectionHeaderIndex;
 	} __attribute__((packed));
 
-	enum class ELFSectionType : uint32_t
+	enum class ELFSectionHeaderType : uint32_t
 	{
 		Null = 0x0,
 		PROGBITS = 0x1,
@@ -24,24 +24,34 @@ namespace ELF
 		Hash = 0x5,
 		Dynamic = 0x6,
 		Note = 0x7,
-		NoBits = 0x8,
+		NOBITS = 0x8,
 		Relocation = 0x9,
 		SharedLib = 0x10,
 		DynamicSymbolTable = 0x11,
 	};
 
-	enum class ELFSectionFlags : uint32_t
+	enum class ELFSectionHeaderFlags : uint32_t
 	{
 		Write = 0x1,
 		Alloc = 0x2,
 		ExecInstruction = 0x4,
+		Merge = 0x10,
+		Strings = 0x20,
+		InfoLink = 0x40,
+		LinkOrder = 0x80,
+		OSNonConfirming = 0x100,
+		Group = 0x200,
+		MaskOS = 0x0ff00000,
+		Ordered = 0x40000000,
+		Exclude = 0x80000000,
+		MaskProc = 0xf0000000,
 	};
 
 	struct ELF32SectionHeader
 	{
 		uint32_t Name; // Offset for SectionHeaderStringTableIndex
-		ELFSectionType Type;
-		ELFSectionFlags Flags;
+		ELFSectionHeaderType Type;
+		ELFSectionHeaderFlags Flags;
 		uint32_t Address;
 		uint32_t Offset;
 		uint32_t Size;
@@ -54,8 +64,8 @@ namespace ELF
 	struct ELF64SectionHeader
 	{
 		uint32_t Name; // Offset for SectionHeaderStringTableIndex
-		ELFSectionType Type;
-		ELFSectionFlags Flags;
+		ELFSectionHeaderType Type;
+		ELFSectionHeaderFlags Flags;
 		uint64_t Address;
 		uint64_t Offset;
 		uint32_t Size;

@@ -32,6 +32,12 @@ namespace ELF
 			return false;
 		}
 
+		if(!ParseSectionHeaders())
+		{
+			std::cerr << "ELF->Parse: Failed to Parse Section Headers: " + path << std::endl;
+			return false;
+		}
+
 		std::cout << "Successfully Parsed ELF: " + path << std::endl;
 		return true;
 	}
@@ -46,7 +52,7 @@ namespace ELF
 	void ELF::DumpProgramHeaders()
 	{
 		std::cout << "---------------ELF Program Headers For: " << m_FilePath << "---------------" << std::endl;
-		std::cout << "ProgramHeaderCount: " << std::to_string(m_Header->ProgramHeaderCount) << std::endl;
+		std::cout << "ProgramHeaderCount: " << std::to_string(m_Header->ProgramHeaderCount) << "\n\n";
 		
 		for(size_t i = 0; i < m_ProgramHeaders.size(); i++)
 		{
@@ -54,6 +60,22 @@ namespace ELF
 			std::cout << Utility::ELFToString(m_ProgramHeaders[i]) << "\n";
 
 			if ((i + 1) < m_ProgramHeaders.size())
+				std::cout << "\n";
+		}
+		std::cout << "------------------------------------------------------------" << std::endl;
+	}
+
+	void ELF::DumpSectionHeaders()
+	{
+		std::cout << "---------------ELF Section Headers For: " << m_FilePath << "---------------" << std::endl;
+		std::cout << "SectionHeaderCount: " << std::to_string(m_Header->SectionHeaderCount) << "\n\n";
+		
+		for(size_t i = 0; i < m_SectionHeaders.size(); i++)
+		{
+			std::cout << "Header " << i << "\n";
+			std::cout << Utility::ELFToString(m_SectionHeaders[i]) << "\n";
+
+			if ((i + 1) < m_SectionHeaders.size())
 				std::cout << "\n";
 		}
 		std::cout << "------------------------------------------------------------" << std::endl;
@@ -74,6 +96,21 @@ namespace ELF
 			m_FileStream.seekg((m_Header->ProgramHeaderOffset) + (m_Header->ProgramHeaderEntrySize * i));
 			m_FileStream.read((char*)&programHeader, sizeof(ELF32ProgramHeader));
 			m_ProgramHeaders.push_back(programHeader);
+		}
+
+		return true;
+	}
+
+	bool ELF::ParseSectionHeaders()
+	{
+		m_SectionHeaders.reserve(m_Header->SectionHeaderCount);
+
+		for(size_t i = 0; i < m_Header->SectionHeaderCount; i++)
+		{
+			ELF32SectionHeader sectionHeader;
+			m_FileStream.seekg((m_Header->SectionHeaderOffset) + (m_Header->SectionHeaderEntrySize * i));
+			m_FileStream.read((char*)&sectionHeader, sizeof(ELF32SectionHeader));
+			m_SectionHeaders.push_back(sectionHeader);
 		}
 
 		return true;
