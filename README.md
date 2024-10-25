@@ -20,7 +20,8 @@ libELF ELF LIBRARY, SUPPORTS BOTH ELF32 and ELF64.
 
 ## Features
 
-- ....
+- [x] ELF32
+- [ ] ELF64
 
 ## Build
 Please read through our [building guidelines](https://github.com/enforcer32/libELF/blob/master/BUILDING.md).

@@ -7,7 +7,7 @@ int main(int argc, char** argv)
 {
 	if (argc < 3 || argc > 3)
 	{
-		std::cout << "ELFReader: Usage [option] FilePath\n\tOptions: -h = Dump Headers\n\t\t -p = Dump Program Headers\n\t\t -s = Dump Section Headers\n";
+		std::cout << "ELFReader: Usage [option] FilePath\n\tOptions: -a = Dump All Headers\n\t\t -h = Dump Headers\n\t\t -p = Dump Program Headers\n\t\t -s = Dump Section Headers\n";
 		return 0;
 	}
 
@@ -19,6 +19,13 @@ int main(int argc, char** argv)
 	{
 		std::cerr << "Failed to Parse Kernel.elf\n";
 		return -1;
+	}
+
+	if (!strcmp(options, "-a"))
+	{
+		elf.DumpHeaders();
+		elf.DumpProgramHeaders();
+		elf.DumpSectionHeaders();
 	}
 
 	if (!strcmp(options, "-h"))
